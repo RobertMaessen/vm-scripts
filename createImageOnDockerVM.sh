@@ -22,7 +22,6 @@ echo -e "${GR}release-versions branch is set to ${RBRANCH}, type 'Y' if that is 
 read -r branch
 case $branch in
   Y|y) echo "we will use $RBRANCH"
-    git pull
   ;;
   *) echo "we will checkout $branch"
     git checkout $branch
@@ -37,7 +36,6 @@ echo -e "${GR}helm-image branch is set to ${HBRANCH}, type 'Y' if that is fine o
 read -r branch
 case $branch in
   Y|y) echo "we will use $HBRANCH"
-    git pull
   ;;
   *) echo "we will checkout $branch"
     git checkout $branch
@@ -53,7 +51,6 @@ echo -e "${GR}platform-backend branch is set to ${PBRANCH}, type 'Y' if that is 
 read -r branch
 case $branch in
   Y|y) echo "we will use $PBRANCH"
-    git pull
   ;;
   *) echo "we will checkout $branch"
     git checkout $branch
@@ -68,7 +65,6 @@ echo -e "${GR}analytics-backend branch is set to ${ABRANCH}, type 'Y' if that is
 read -r branch
 case $branch in
   Y|y) echo "we will use $ABRANCH"
-    git pull
   ;;
   *) echo "we will checkout $branch"
     git checkout $branch
@@ -83,7 +79,6 @@ echo -e "${GR}manager-backend branch is set to ${MBRANCH}, type 'Y' if that is f
 read -r branch
 case $branch in
   Y|y) echo "we will use $MBRANCH"
-    git pull
   ;;
   *) echo "we will checkout $branch"
     git checkout $branch
@@ -98,7 +93,6 @@ echo -e "${GR}frontend branch is set to ${FBRANCH}, type 'Y' if that is fine oth
 read -r branch
 case $branch in
   Y|y) echo "we will use $FBRANCH"
-    git pull
   ;;
   *) echo "we will checkout $branch"
     git checkout $branch
@@ -113,7 +107,6 @@ echo -e "${GR}backend-common branch is set to ${CBRANCH}, type 'Y' if that is fi
 read -r branch
 case $branch in
   Y|y) echo "we will use $CBRANCH"
-    git pull
   ;;
   *) echo "we will checkout $branch"
     git checkout $branch
@@ -128,7 +121,6 @@ echo -e "${GR}analytics-engine branch is set to ${EBRANCH}, type 'Y' if that is 
 read -r branch
 case $branch in
   Y|y) echo "we will use $EBRANCH"
-    git pull
   ;;
   *) echo "we will checkout $branch"
     git checkout $branch
