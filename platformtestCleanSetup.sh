@@ -18,16 +18,108 @@ sqlcmd -S s02.sygno.com,1433 -U uat_user -P HRJ_Sygno2025! -C -Q "create databas
 rm -rf /opt/platformtest/sygno_core/*
 rm -rf /opt/platformtest/inputs/*
 rm -rf /opt/platformtest/outputs/*
-[ -d src ] && mv src analytics-engine &&  touch /tmp/RENAME
-rsync -rogu  analytics-engine ${SGC_HOME}
-[ -f /tmp/RENAME ] && mv analytics-engine src && rm -f /tmp/RENAME
-cd $GIT_HOME/frontend
+
+cd ${GIT_HOME}/platform-backend || exit 1
 git pull
-cd $GIT_HOME
-rsync -rogu platform-backend $SGC_HOME
-rsync -rogu analytics-backend $SGC_HOME
-rsync -rogu manager-backend/manager $SGC_HOME
-rsync -rogu frontend $SGC_HOME
+git branch -r
+PBRANCH=$(git branch | grep \*)
+echo -e "${GR}platform-backend branch is set to ${RED}${PBRANCH}${GR}, type 'Y' if that is fine otherwise type in the branch name you want to use${NC}"
+read -r branch
+case $branch in
+  Y|y) echo "we will use $PBRANCH"
+  ;;
+  *) echo "we will checkout $branch"
+    git checkout $branch
+    git pull
+esac
+
+cd ${GIT_HOME}/analytics-backend || exit 1
+git pull
+git branch -r
+ABRANCH=$(git branch | grep \*)
+echo -e "${GR}analytics-backend branch is set to ${RED}${ABRANCH}$GR, type 'Y' if that is fine otherwise type in the branch name you want to use${NC}"
+read -r branch
+case $branch in
+  Y|y) echo "we will use $ABRANCH"
+  ;;
+  *) echo "we will checkout $branch"
+    git checkout $branch
+    git pull
+esac
+
+cd ${GIT_HOME}/manager-backend/manager || exit 1
+git pull
+git branch -r
+MBRANCH=$(git branch | grep \*)
+echo -e "${GR}manager-backend branch is set to ${RED}${MBRANCH}${GR}, type 'Y' if that is fine otherwise type in the branch name you want to use${NC}"
+read -r branch
+case $branch in
+  Y|y) echo "we will use $MBRANCH"
+  ;;
+  *) echo "we will checkout $branch"
+    git checkout $branch
+    git pull
+esac
+
+cd ${GIT_HOME}/frontend || exit 1
+git pull
+git branch -r
+FBRANCH=$(git branch | grep \*)
+echo -e "${GR}frontend branch is set to ${RED}${FBRANCH}${GR}, type 'Y' if that is fine otherwise type in the branch name you want to use${NC}"
+read -r branch
+case $branch in
+  Y|y) echo "we will use $FBRANCH"
+  ;;
+  *) echo "we will checkout $branch"
+    git checkout $branch
+    git pull
+esac
+
+cd ${GIT_HOME}/backend-common || exit 1
+git pull
+git branch -r
+CBRANCH=$(git branch | grep \*)
+echo -e "${GR}backend-common branch is set to ${RED}${CBRANCH}${GR}, type 'Y' if that is fine otherwise type in the branch name you want to use ${NC}"
+read -r branch
+case $branch in
+  Y|y) echo "we will use $CBRANCH"
+  ;;
+  *) echo "we will checkout $branch"
+    git checkout $branch
+    git pull
+esac
+
+cd $GIT_HOME/analytics-engine || exit 1
+git  pull
+git branch -r
+EBRANCH=$(git branch | grep \*)
+echo -e "${GR}analytics-engine branch is set to ${RED}${EBRANCH}${GR}, type 'Y' if that is fine otherwise type in the branch name you want to use${NC}"
+read -r branch
+case $branch in
+  Y|y) echo "we will use $EBRANCH"
+  ;;
+  *) echo "we will checkout $branch"
+    git checkout $branch
+    git pull
+esac
+
+cd ${SG_HOME} || exit 1
+rm -rf sygno_core_20*
+mv sygno_core sygno_core_$(date +%F)
+mkdir sygno_core
+
+cd ${GIT_HOME} || exit 1
+rsync -a platform-backend ${SGC_HOME}
+rsync -a analytics-backend/src/ ${SGC_HOME}/analytics-backend
+rsync -a manager-backend/manager ${SGC_HOME}
+rsync -a frontend ${SGC_HOME}
+rsync -a backend-common/ ${SGC_HOME}/analytics-backend/src/common
+rsync -a backend-common/ ${SGC_HOME}/platform-backend/src/common
+rsync -a backend-common/ ${SGC_HOME}/manager/src/common
+cd ${SGC_HOME}/frontend || exit
+npm ci
+printf "y\n" | npx update-browserslist-db@latest
+npm run build
 
 # cp -r ~/settings_save ~/settings
 cp ~/settings/set_pl.yml $SGC_HOME/platform-backend/settings.yml
