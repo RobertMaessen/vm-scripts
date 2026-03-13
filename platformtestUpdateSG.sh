@@ -111,10 +111,10 @@ npm ci
 printf "y\n" | npx update-browserslist-db@latest
 npm run build
 
-cp ${SRC_FILES}/set_pl.yml ${SGC_HOME}/platform-backend/
+cp ${SRC_FILES}/set_pl.yml ${SGC_HOME}/platform-backend/settings.yml
 cp -r ${SRC_FILES}/keys ${SGC_HOME}/platform-backend/
-cp ${SRC_FILES}/set_an.yml ${SGC_HOME}/analytics-backend/
-cp ${SRC_FILES}/set_ma.yml ${SGC_HOME}/manager/
+cp ${SRC_FILES}/set_an.yml ${SGC_HOME}/analytics-backend/settings.yml
+cp ${SRC_FILES}/set_ma.yml ${SGC_HOME}/manager/settings.yml
 cp ${SRC_FILES}/config.json ${SGC_HOME}/frontend/build/
 
 source ${SG_VENV}/bin/activate
