@@ -306,7 +306,7 @@ SygnoCore(){
        echo " platform backend seems to be running. Not starting" >&2
    else
      cd $SGC_HOME/platform-backend/src || exit 1
-     nohup gunicorn -b 127.0.0.1:5000 --workers=2 --timeout 120 -c gunicorn_config.py --chdir ../ 'app:create_app()' >> ${LOGDIR}/pl_backend.out 2>> ${LOGDIR}/pl_backend.err.out &
+     nohup gunicorn -c gunicorn_config.py -b 127.0.0.1:5000 --workers=2 --timeout 120 --chdir ../ 'app:create_app()' >> ${LOGDIR}/pl_backend.out 2>> ${LOGDIR}/pl_backend.err.out &
      sleep 2
      PROCR=$(ps aux | grep "gunicorn" | grep -v grep | grep -c "5000")
      if [ $PROCR != 0 ]
@@ -352,7 +352,7 @@ SygnoCore(){
          echo " analytics backend seems to be running. Not starting" >&2
      else
        cd $SGC_HOME/analytics-backend/src || exit 1
-       nohup gunicorn -b 127.0.0.1:5001 --workers=2 --timeout 120 -c gunicorn_config.py --chdir ../ 'app:create_app()' >> ${LOGDIR}/an_backend.out 2>> ${LOGDIR}/an_backend.err.out &
+       nohup gunicorn -c gunicorn_config.py -b 127.0.0.1:5001 --workers=2 --timeout 120 --chdir ../ 'app:create_app()' >> ${LOGDIR}/an_backend.out 2>> ${LOGDIR}/an_backend.err.out &
        sleep 2
        PROCR=$(ps aux | grep "gunicorn" | grep -v grep | grep -c "5001")
        if [ $PROCR != 0 ]
@@ -399,7 +399,7 @@ SygnoCore(){
          echo " Manager backend seems to be running. Not starting" >&2
      else
        cd $SGC_HOME/manager/src || exit 1
-       nohup gunicorn -b 127.0.0.1:5002 --workers=2 --timeout 120 -c gunicorn_config.py --chdir ../ 'app:create_app()' >> ${LOGDIR}/ma_backend.out 2>> ${LOGDIR}/ma_backend.err.out &
+       nohup gunicorn -c gunicorn_config.py -b 127.0.0.1:5002 --workers=2 --timeout 120 --chdir ../ 'app:create_app()' >> ${LOGDIR}/ma_backend.out 2>> ${LOGDIR}/ma_backend.err.out &
        sleep 2
        PROCR=$(ps aux | grep "gunicorn" | grep -v grep | grep -c "5002")
        if [ $PROCR != 0 ]
