@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 SGservice.sh SygnoCore stop
 
-GIT_HOME="/home/sguser/git/sygno_core"
 sqlcmd -S s02.sygno.com,1433 -U uat_user -P HRJ_Sygno2025! -C -Q "alter database [sygno_core_ds] set single_user with rollback immediate"
 sqlcmd -S s02.sygno.com,1433 -U uat_user -P HRJ_Sygno2025! -C -Q "alter database [sygno_core_ma] set single_user with rollback immediate"
 sqlcmd -S s02.sygno.com,1433 -U uat_user -P HRJ_Sygno2025! -C -Q "drop database sygno_core_ds"
@@ -122,14 +121,15 @@ printf "y\n" | npx update-browserslist-db@latest
 npm run build
 
 # cp -r ~/settings_save ~/settings
-cp ~/settings/set_pl.yml $SGC_HOME/platform-backend/settings.yml
-cp ~/settings/scoring_settings.yml $SGC_HOME/platform-backend
-cp -r  ~/settings/keys $SGC_HOME/platform-backend
-cp ~/settings/set_an.yml $SGC_HOME/analytics-backend/settings.yml
-cp ~/settings/set_ma.yml $SGC_HOME/manager/settings.yml
-cp ~/settings/set_ane.yml $SGC_HOME/analytics-engine/settings.yml
+cp ${SRC_FILES}/set_pl.yml ${SGC_HOME}/platform-backend/settings.yml
+cp ${SRC_FILES}/scoring_settings.yml ${SGC_HOME}/platform-backend
+cp -r ${SRC_FILES}/keys ${SGC_HOME}/platform-backend
+cp ${SRC_FILES}/set_an.yml ${SGC_HOME}/analytics-backend/settings.yml
+cp ${SRC_FILES}/set_ma.yml ${SGC_HOME}/manager/settings.yml
+cp ${SRC_FILES}/set_ane.yml ${SGC_HOME}/analytics-engine/settings.yml
+cp ${SRC_FILES}/config.json ${SGC_HOME}/frontend/build
 
-source /opt/platformtest/sgenv/sgvenv/bin/activate || exit
+source ${SG_VENV}/bin/activate || exit
 cd ${SGC_HOME}/platform-backend
 flask db upgrade
 flask create-token an-backend > /tmp/antoken
@@ -155,10 +155,5 @@ cd ${SGC_HOME}/platform-backend
 flask db upgrade
 cd ${SGC_HOME}/manager
 flask db upgrade
-cd ${SGC_HOME}/frontend
-npm ci
-printf "y\n" |  npx update-browserslist-db@latest
-npm run build
 
-cp ~/settings/config.json $SGC_HOME/frontend/build
 SGservice.sh SygnoCore start
