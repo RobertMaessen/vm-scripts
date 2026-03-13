@@ -100,7 +100,7 @@ mkdir sygno_core
 
 cd ${GIT_HOME} || exit 1
 rsync -a platform-backend ${SGC_HOME}
-rsync -a analytics-backend ${SGC_HOME}
+rsync -a analytics-backend/src/ ${SGC_HOME}/analytics-backend
 rsync -a manager-backend/manager ${SGC_HOME}
 rsync -a frontend ${SGC_HOME}
 rsync -a backend-common/ ${SGC_HOME}/analytics-backend/src/common
