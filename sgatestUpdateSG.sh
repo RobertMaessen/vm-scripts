@@ -1,22 +1,13 @@
 #!/usr/bin/env bash
+
+
+B=$(tput bold)
+N=$(tput sgr0)
+RED='\033[0;31m'
+GR='\033[0;32m'
+NC='\033[0m'
+
 SGservice.sh SygnoCore stop
-
-sqlcmd -S s02.sygno.com,1433 -U uat_user -P HRJ_Sygno2025! -C -Q "alter database [sygno_core_ds] set single_user with rollback immediate"
-sqlcmd -S s02.sygno.com,1433 -U uat_user -P HRJ_Sygno2025! -C -Q "alter database [sygno_core_ma] set single_user with rollback immediate"
-sqlcmd -S s02.sygno.com,1433 -U uat_user -P HRJ_Sygno2025! -C -Q "drop database sygno_core_ds"
-sqlcmd -S s02.sygno.com,1433 -U uat_user -P HRJ_Sygno2025! -C -Q "drop database sygno_core_ma"
-sqlcmd -S s02.sygno.com,1433 -U uat_user -P HRJ_Sygno2025! -C -Q "alter database [sygno_core_pl] set single_user with rollback immediate"
-sqlcmd -S s02.sygno.com,1433 -U uat_user -P HRJ_Sygno2025! -C -Q "drop database sygno_core_pl"
-sqlcmd -S s02.sygno.com,1433 -U uat_user -P HRJ_Sygno2025! -C -Q "alter database [sygno_core_an] set single_user with rollback immediate"
-sqlcmd -S s02.sygno.com,1433 -U uat_user -P HRJ_Sygno2025! -C -Q "drop database sygno_core_an"
-sqlcmd -S s02.sygno.com,1433 -U uat_user -P HRJ_Sygno2025! -C -Q "create database sygno_core_an"
-sqlcmd -S s02.sygno.com,1433 -U uat_user -P HRJ_Sygno2025! -C -Q "create database sygno_core_pl"
-sqlcmd -S s02.sygno.com,1433 -U uat_user -P HRJ_Sygno2025! -C -Q "create database sygno_core_ma"
-sqlcmd -S s02.sygno.com,1433 -U uat_user -P HRJ_Sygno2025! -C -Q "create database sygno_core_ds"
-
-rm -rf /opt/platformtest/sygno_core/*
-rm -rf /opt/platformtest/inputs/*
-rm -rf /opt/platformtest/outputs/*
 
 cd ${GIT_HOME}/platform-backend || exit 1
 git pull
@@ -130,31 +121,23 @@ cp ${SRC_FILES}/set_ma.yml ${SGC_HOME}/manager/settings.yml
 cp ${SRC_FILES}/set_ane.yml ${SGC_HOME}/analytics-engine/settings.yml
 cp ${SRC_FILES}/config.json ${SGC_HOME}/frontend/build
 
-source ${SG_VENV}/bin/activate || exit
-cd ${SGC_HOME}/platform-backend
+
+source ${SG_VENV}/bin/activate
+cd ${SGC_HOME}/platform-backend/ || exit 1
 flask db upgrade
-flask create-token an-backend > /tmp/antoken
-TOKEN=$(tail -1 /tmp/antoken)
-sed -i "/server_token: /c\\server_token: \'${TOKEN}\'" ${SGC_HOME}/analytics-backend/settings.yml
-flask create-token an-engine > /tmp/anetoken
-STOKEN=$(tail -1 /tmp/anetoken)
-sed -i "/server_token: /c\\server_token: \'${STOKEN}\'" ${ANE_HOME}/settings.yml
-flask create-token platform > /tmp/pltoken
-PTOKEN=$(tail -1 /tmp/pltoken)
-sed -i "/server_token: /c\\server_token: \'${PTOKEN}\'" ${SGC_HOME}/platform-backend/settings.yml
-flask create-token manager > /tmp/matoken
-MTOKEN=$(tail -1 /tmp/matoken)
-sed -i "/server_token: /c\\server_token: \'${MTOKEN}\'" ${SGC_HOME}/manager/settings.yml
-flask create-initial-user admin@sygno.com --pw WeCanChangeIt!
-rm -f /tmp/sgatoken
-rm -f /tmp/antoken
-rm -f /tmp/pltoken
-rm -f /tmp/matoken
-cd ${SGC_HOME}/analytics-backend
+cd ${SGC_HOME}/analytics-backend/ || exit 1
 flask db upgrade
-cd ${SGC_HOME}/platform-backend
-flask db upgrade
-cd ${SGC_HOME}/manager
+cd ${SGC_HOME}/manager/ || exit 1
 flask db upgrade
 
-SGservice.sh SygnoCore start
+echo " "
+echo -e "${GR}Should we start the application (${B}y/n${N})?${NC}"
+read -r input
+case ${input} in
+Y|y) echo -e "OK starting the application after update!"
+     SGservice.sh SygnoCore start
+;;
+N|n) echo -e "OK NOT starting the application"
+;;
+*) exit 1
+esac

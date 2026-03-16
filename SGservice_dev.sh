@@ -314,7 +314,7 @@ SygnoCore(){
        pid=$(ps aux | grep "gunicorn" | grep -v grep | grep  "5000" | head -1 | awk '{print $2}')
        echo $pid > $PIDP
        SECONDS=0
-       while [ $SECONDS -lt 30 ]
+       while [ $SECONDS -lt 10 ]
        do
          PLRUN=$(curl --no-progress-meter 'http://127.0.0.1:5000/pl/heartbeat' | grep -i -c true)
          if [ $PLRUN != 2 ]
@@ -330,7 +330,7 @@ SygnoCore(){
            fi
            sleep 2
          done
-         if [ $SECONDS -ge 30 ]; then
+         if [ $SECONDS -ge 10 ]; then
          echo -e "Platform initialisation failed
                                                            ${RED}${B}FAILED${N}${NC}"
          fi
@@ -360,7 +360,7 @@ SygnoCore(){
          pid=$(ps aux | grep "gunicorn" | grep -v grep | grep  "5001" | head -1 | awk '{print $2}')
          echo $pid > $PIDA
          SECONDS=0
-         while [ $SECONDS -lt 30 ]
+         while [ $SECONDS -lt 10 ]
          do
            PLRUN=$(curl --no-progress-meter 'http://127.0.0.1:5001/an/heartbeat' | grep -i -c true)
            if [ $PLRUN != 2 ]
@@ -376,7 +376,7 @@ SygnoCore(){
              fi
              sleep 2
            done
-           if [ $SECONDS -ge 30 ]; then
+           if [ $SECONDS -ge 10 ]; then
            echo -e "Analytics initialisation failed
                                                            ${RED}${B}FAILED${N}${NC}"
            fi
@@ -407,7 +407,7 @@ SygnoCore(){
          pid=$(ps aux | grep "gunicorn" | grep -v grep | grep  "5002" | head -1 | awk '{print $2}')
          echo $pid > $PIDM
          SECONDS=0
-         while [ $SECONDS -lt 30 ]
+         while [ $SECONDS -lt 10 ]
          do
            PLRUN=$(curl --no-progress-meter 'http://127.0.0.1:5002/mg/heartbeat' | grep -i -c true)
            if [ $PLRUN != 2 ]
@@ -423,7 +423,7 @@ SygnoCore(){
              fi
              sleep 2
            done
-           if [ $SECONDS -ge 30 ]; then
+           if [ $SECONDS -ge 10 ]; then
            echo -e "Manager initialisation failed
                                                            ${RED}${B}FAILED${N}${NC}"
            fi
