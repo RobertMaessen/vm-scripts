@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 SGservice.sh SygnoCore stop
 
 sqlcmd -S s02.sygno.com,1433 -U uat_user -P HRJ_Sygno2025! -C -Q "alter database [sygno_core_ds] set single_user with rollback immediate"
@@ -14,9 +15,9 @@ sqlcmd -S s02.sygno.com,1433 -U uat_user -P HRJ_Sygno2025! -C -Q "create databas
 sqlcmd -S s02.sygno.com,1433 -U uat_user -P HRJ_Sygno2025! -C -Q "create database sygno_core_ma"
 sqlcmd -S s02.sygno.com,1433 -U uat_user -P HRJ_Sygno2025! -C -Q "create database sygno_core_ds"
 
-rm -rf /opt/platformtest/sygno_core/*
-rm -rf /opt/platformtest/inputs/*
-rm -rf /opt/platformtest/outputs/*
+rm -rf ${SG_HOME}/sygno_core/*
+rm -rf ${SG_HOME}/inputs/*
+rm -rf ${SG_HOME}/outputs/*
 
 cd ${GIT_HOME}/platform-backend || exit 1
 git pull
