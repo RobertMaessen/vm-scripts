@@ -179,8 +179,8 @@ docker build -t ${DOCKER_URL}/sygno-exec-${BASE}:$APPV \
   --build-arg SC_BASE=${BASE} \
   --build-arg SC_APPV=${APPV} \
   --build-arg NEXUS_URL=${NEXUS_URL} \
-  --build-arg nexus_user="$(awk -F ":" ~/.nexuspw '{print $1}')" \
-  --build-arg nexus_pass="$(awk -F ":" ~/.nexuspw '{print $2}')" \
+  --secret id=nexus_user, src="$(awk -F ":" $HOME/.nexuspw '{print $1}')" \
+  --secret id=nexus_pass, src="$(awk -F ":" $HOME/.nexuspw '{print $2}')" \
   .
 
 # Push it
