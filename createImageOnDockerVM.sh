@@ -8,6 +8,9 @@ NEXUS_USER="$(awk -F ":" '{print $1}' "$HOME/.nexuspw")"
 NEXUS_PASS="$(awk -F ":" '{print $2}' "$HOME/.nexuspw")"
 BASE=$(grep Base ${GIT_HOME}/release-versions/SygnoCore.txt | awk -F ": " '{print $2}' )
 APPV="0.0.29" # This needs to be updated before a run... otherwise it will not be installed via helm
+cut -d: -f1 "$HOME/.nexuspw" > /tmp/nexus_user.secret
+cut -d: -f2- "$HOME/.nexuspw" > /tmp/nexus_pass.secret
+chmod 600 /tmp/nexus_user.secret /tmp/nexus_pass.secret
 
 B=$(tput bold)
 N=$(tput sgr0)
@@ -168,8 +171,8 @@ docker build -t ${DOCKER_URL}/sygno-helm-${BASE}:$APPV \
   --build-arg SC_APPV=${APPV} \
   --build-arg NEXUS_URL=${NEXUS_URL} \
   --build-arg NEXUS_CUST_URL=${NEXUS_CUST_URL} \
-  --secret id=nexus_user,env="${NEXUS_USER}" \
-  --secret id=nexus_pass,env="${NEXUS_PASS}" \
+  --secret id=nexus_user,src=/tmp/nexus_user.secret \
+  --secret id=nexus_pass,src=/tmp/nexus_pass.secret \
   .
 
 # Push the image
@@ -186,8 +189,8 @@ docker build -t ${DOCKER_URL}/sygno-exec-${BASE}:$APPV \
   --build-arg SC_BASE=${BASE} \
   --build-arg SC_APPV=${APPV} \
   --build-arg NEXUS_URL=${NEXUS_URL} \
-  --secret id=nexus_user,env="${NEXUS_USER}" \
-  --secret id=nexus_pass,env="${NEXUS_PASS}" \
+  --secret id=nexus_user,src=/tmp/nexus_user.secret \
+  --secret id=nexus_pass,src=/tmp/nexus_pass.secret \
   .
 
 # Push it
@@ -197,3 +200,4 @@ docker push ${DOCKER_URL}/sygno-exec-${BASE}:${APPV}
 printf "y\n" | docker system prune --all
 cd ${GIT_HOME} || exit 1
 rm -rf ${RELEASE_DIR}
+rm -f /tmp/nexus_*.secret
