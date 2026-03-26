@@ -4,8 +4,8 @@ HELM_IMAGE="${GIT_HOME}/helm-image"
 DOCKER_URL="192.168.122.72:5000"
 NEXUS_URL="http://192.168.122.61:8081/repository/raw_files/APPS"
 NEXUS_CUST_URL="http://192.168.122.61:8081/repository/customers/"
-NEXUS_USER="$(awk -F: '{print $1}' "$HOME/.nexuspw")"
-NEXUS_PASS="$(awk -F: '{print $2}' "$HOME/.nexuspw")"
+NEXUS_USER="$(awk -F ":" '{print $1}' "$HOME/.nexuspw")"
+NEXUS_PASS="$(awk -F ":" '{print $2}' "$HOME/.nexuspw")"
 BASE=$(grep Base ${GIT_HOME}/release-versions/SygnoCore.txt | awk -F ": " '{print $2}' )
 APPV="0.0.29" # This needs to be updated before a run... otherwise it will not be installed via helm
 
