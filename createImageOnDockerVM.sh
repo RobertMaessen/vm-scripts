@@ -148,12 +148,12 @@ cp -r ${HELM_IMAGE}/Dockerfile ${RELEASE_DIR}
 cp -r ${HELM_IMAGE}/dockerFiles  ${RELEASE_DIR}
 cp -r ${HELM_IMAGE}/bin  ${RELEASE_DIR}
 cp -r ${HELM_IMAGE}/spark-image ${RELEASE_DIR}
-cp ${REL_HOME}pipfile.txt ${RELEASE_DIR}/dockerFiles/requirements.txt
-cp ${REL_HOME}pipfile.txt ${RELEASE_DIR}spark-image/etc/requirements.txt
+cp ${REL_HOME}/pipfile.txt ${RELEASE_DIR}/dockerFiles/requirements.txt
+cp ${REL_HOME}/pipfile.txt ${RELEASE_DIR}spark-image/etc/requirements.txt
 
 # Docker build sygno-helm image
 cd ${RELEASE_DIR} || exit 1
-docker build -t ${DOCKER_URL}/sygno-helm-${BASE}:$APPV \
+docker build -t ${DOCKER_URL}/sygno-helm-${BASE}:$APPV .\
   --build-arg APP_PYTHONVERSION="$(grep PythonVersion ${REL_HOME}/applications.txt | awk -F ": " '{print $2}')" \
   --build-arg APP_NODEVERSION="$(grep NodeVersion ${REL_HOME}/applications.txt | awk -F ": " '{print $2}')" \
   --build-arg APP_SPARKVERSION="$(grep SparkVersion ${REL_HOME}/applications.txt | awk -F ": " '{print $2}')" \
@@ -165,8 +165,7 @@ docker build -t ${DOCKER_URL}/sygno-helm-${BASE}:$APPV \
   --build-arg NEXUS_URL=${NEXUS_URL} \
   --build-arg NEXUS_CUST_URL=${NEXUS_CUST_URL} \
   --secret id=nexus_user, src="$(cat $HOME/.nexuspw | awk -F ":" '{print $1}')" \
-  --secret id=nexus_pass, src="$(cat $HOME/.nexuspw | awk -F ":" '{print $2}')" \
-  .
+  --secret id=nexus_pass, src="$(cat $HOME/.nexuspw | awk -F ":" '{print $2}')"
 # Push the image
 docker push ${DOCKER_URL}/sygno-helm-${BASE}:${APPV}
 
