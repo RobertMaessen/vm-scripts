@@ -197,7 +197,7 @@ docker build -t ${DOCKER_URL}/sygno-exec-${BASE}:$APPV \
 docker push ${DOCKER_URL}/sygno-exec-${BASE}:${APPV}
 
 # Clean up after build
-printf "y\n" | docker system prune --all
+# printf "y\n" | docker system prune --all | testing purpose
 cd ${GIT_HOME} || exit 1
 rm -rf ${RELEASE_DIR}
 rm -f /tmp/nexus_*.secret
