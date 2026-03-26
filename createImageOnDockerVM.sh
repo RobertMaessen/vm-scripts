@@ -3,6 +3,7 @@
 HELM_IMAGE="${GIT_HOME}/helm-image"
 DOCKER_URL="192.168.122.72:5000"
 NEXUS_URL="http://192.168.122.61:8081/repository/raw_files/APPS"
+NEXUS_CUST_URL="http://192.168.122.61:8082"
 BASE=$(grep Base ${GIT_HOME}/release-versions/SygnoCore.txt | awk -F ": " '{print $2}' )
 APPV="0.0.29" # This needs to be updated before a run... otherwise it will not be installed via helm
 
@@ -162,11 +163,12 @@ docker build -t ${DOCKER_URL}/sygno-helm-${BASE}:$APPV \
   --build-arg SC_BASE=${BASE} \
   --build-arg SC_APPV=${APPV} \
   --build-arg NEXUS_URL=${NEXUS_URL} \
-  --build-arg nexus_user="$(awk -F ":" ~/.nexuspw '{print $1}')" \
-  --build-arg nexus_pass="$(awk -F ":" ~/.nexuspw '{print $2}')" \
+  --build-arg NEXUS_CUST_URL=${NEXUS_CUST_URL} \
+  --secret nexus_user="$(awk -F ":" ~/.nexuspw '{print $1}')" \
+  --secret nexus_pass="$(awk -F ":" ~/.nexuspw '{print $2}')" \
   .
 # Push the image
-docker push ${DOCKER_URL}/sygno-helm-${BASE}:$APPV
+docker push ${DOCKER_URL}/sygno-helm-${BASE}:${APPV}
 
 # Docker build sygno-exec image
 cd ${RELEASE_DIR}/spark-image || exit 1
