@@ -131,18 +131,18 @@ case $branch in
 esac
 
 
-mkdir -p /tmp/release/sygno-core
+mkdir -p /tmp/release/sygno_core
 RELEASE_DIR=/tmp/release
 cd ${GIT_HOME} || exit 1
-rsync -a platform-backend ${RELEASE_DIR}/sygno-core
-rsync -a --exclude cypress* frontend ${RELEASE_DIR}/sygno-core
-rsync -a analytics-backend ${RELEASE_DIR}/sygno-core
-rsync -a manager-backend/manager ${RELEASE_DIR}/sygno-core
-rsync -a analytics-engine/src/ ${RELEASE_DIR}/sygno-core/analytics-engine
-rsync -a analytics-engine/encrypt.txt ${RELEASE_DIR}/sygno-core
-rsync -a backend-common/ ${RELEASE_DIR}/sygno-core/analytics-backend/src/common
-rsync -a backend-common/ ${RELEASE_DIR}/sygno-core/platform-backend/src/common
-rsync -a backend-common/ ${RELEASE_DIR}/sygno-core/manager/src/common
+rsync -a platform-backend ${RELEASE_DIR}/sygno_core
+rsync -a --exclude cypress* frontend ${RELEASE_DIR}/sygno_core
+rsync -a analytics-backend ${RELEASE_DIR}/sygno_core
+rsync -a manager-backend/manager ${RELEASE_DIR}/sygno_core
+rsync -a analytics-engine/src/ ${RELEASE_DIR}/sygno_core/analytics-engine
+rsync -a analytics-engine/encrypt.txt ${RELEASE_DIR}/sygno_core
+rsync -a backend-common/ ${RELEASE_DIR}/sygno_core/analytics-backend/src/common
+rsync -a backend-common/ ${RELEASE_DIR}/sygno_core/platform-backend/src/common
+rsync -a backend-common/ ${RELEASE_DIR}/sygno_core/manager/src/common
 
 
 # Copy files to release dir
