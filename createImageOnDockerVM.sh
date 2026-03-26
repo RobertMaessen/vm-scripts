@@ -4,6 +4,8 @@ HELM_IMAGE="${GIT_HOME}/helm-image"
 DOCKER_URL="192.168.122.72:5000"
 NEXUS_URL="http://192.168.122.61:8081/repository/raw_files/APPS"
 NEXUS_CUST_URL="http://192.168.122.61:8081/repository/customers/"
+NEXUS_USER="$(awk -F: '{print $1}' "$HOME/.nexuspw")"
+NEXUS_PASS="$(awk -F: '{print $2}' "$HOME/.nexuspw")"
 BASE=$(grep Base ${GIT_HOME}/release-versions/SygnoCore.txt | awk -F ": " '{print $2}' )
 APPV="0.0.29" # This needs to be updated before a run... otherwise it will not be installed via helm
 
@@ -149,9 +151,9 @@ cp -r ${HELM_IMAGE}/dockerFiles  ${RELEASE_DIR}
 cp -r ${HELM_IMAGE}/bin  ${RELEASE_DIR}
 cp -r ${HELM_IMAGE}/spark-image ${RELEASE_DIR}
 cp ${REL_HOME}/pipfile.txt ${RELEASE_DIR}/dockerFiles/requirements.txt
-cp ${REL_HOME}/pipfile.txt ${RELEASE_DIR}spark-image/etc/requirements.txt
+cp ${REL_HOME}/pipfile.txt ${RELEASE_DIR}/spark-image/etc/requirements.txt
 
-ls ${RELEASE_DIR}
+printf '<%s>\n' "${DOCKER_URL}" "${BASE}" "${APPV}" "${REL_HOME}" "${RELEASE_DIR}"
 
 # Docker build sygno-helm image
 cd ${RELEASE_DIR} || exit 1
@@ -159,15 +161,15 @@ docker build -t ${DOCKER_URL}/sygno-helm-${BASE}:$APPV \
   --build-arg APP_PYTHONVERSION="$(grep PythonVersion ${REL_HOME}/applications.txt | awk -F ": " '{print $2}')" \
   --build-arg APP_NODEVERSION="$(grep NodeVersion ${REL_HOME}/applications.txt | awk -F ": " '{print $2}')" \
   --build-arg APP_SPARKVERSION="$(grep SparkVersion ${REL_HOME}/applications.txt | awk -F ": " '{print $2}')" \
-  --build-arg APP_HADOOPVERSION="$(grep PythonVersion ${REL_HOME}/applications.txt | awk -F ": " '{print $2}')" \
+  --build-arg APP_HADOOPVERSION="$(grep HadoopVersion ${REL_HOME}/applications.txt | awk -F ": " '{print $2}')" \
   --build-arg APP_MSSQLJAR="$(grep MssqlJar ${REL_HOME}/applications.txt | awk -F ": " '{print $2}')" \
   --build-arg APP_PSQLJAR="$(grep PsqlJar ${REL_HOME}/applications.txt | awk -F ": " '{print $2}')" \
   --build-arg SC_BASE=${BASE} \
   --build-arg SC_APPV=${APPV} \
   --build-arg NEXUS_URL=${NEXUS_URL} \
   --build-arg NEXUS_CUST_URL=${NEXUS_CUST_URL} \
-  --secret id=nexus_user, src="$(cat $HOME/.nexuspw | awk -F ":" '{print $1}')" \
-  --secret id=nexus_pass, src="$(cat $HOME/.nexuspw | awk -F ":" '{print $2}')" \
+  --secret id=nexus_user,src="${NEXUS_USER}" \
+  --secret id=nexus_pass,src="${NEXUS_PASS}" \
   .
 
 # Push the image
@@ -178,14 +180,14 @@ cd ${RELEASE_DIR}/spark-image || exit 1
 docker build -t ${DOCKER_URL}/sygno-exec-${BASE}:$APPV \
   --build-arg APP_PYTHONVERSION="$(grep PythonVersion ${REL_HOME}/applications.txt | awk -F ": " '{print $2}')" \
   --build-arg APP_SPARKVERSION="$(grep SparkVersion ${REL_HOME}/applications.txt | awk -F ": " '{print $2}')" \
-  --build-arg APP_HADOOPVERSION="$(grep PythonVersion ${REL_HOME}/applications.txt | awk -F ": " '{print $2}')" \
+  --build-arg APP_HADOOPVERSION="$(grep HadoopVersion ${REL_HOME}/applications.txt | awk -F ": " '{print $2}')" \
   --build-arg APP_MSSQLJAR="$(grep MssqlJar ${REL_HOME}/applications.txt | awk -F ": " '{print $2}')" \
   --build-arg APP_PSQLJAR="$(grep PsqlJar ${REL_HOME}/applications.txt | awk -F ": " '{print $2}')" \
   --build-arg SC_BASE=${BASE} \
   --build-arg SC_APPV=${APPV} \
   --build-arg NEXUS_URL=${NEXUS_URL} \
-  --secret id=nexus_user, src="$(cat $HOME/.nexuspw | awk -F ":" '{print $1}')" \
-  --secret id=nexus_pass, src="$(cat $HOME/.nexuspw | awk -F ":" '{print $2}')" \
+  --secret id=nexus_user,src="${NEXUS_USER}" \
+  --secret id=nexus_pass,src="${NEXUS_PASS}" \
   .
 
 # Push it
