@@ -168,8 +168,8 @@ docker build -t ${DOCKER_URL}/sygno-helm-${BASE}:$APPV \
   --build-arg SC_APPV=${APPV} \
   --build-arg NEXUS_URL=${NEXUS_URL} \
   --build-arg NEXUS_CUST_URL=${NEXUS_CUST_URL} \
-  --secret id=nexus_user,src="${NEXUS_USER}" \
-  --secret id=nexus_pass,src="${NEXUS_PASS}" \
+  --secret id=nexus_user,env="${NEXUS_USER}" \
+  --secret id=nexus_pass,env="${NEXUS_PASS}" \
   .
 
 # Push the image
@@ -186,8 +186,8 @@ docker build -t ${DOCKER_URL}/sygno-exec-${BASE}:$APPV \
   --build-arg SC_BASE=${BASE} \
   --build-arg SC_APPV=${APPV} \
   --build-arg NEXUS_URL=${NEXUS_URL} \
-  --secret id=nexus_user,src="${NEXUS_USER}" \
-  --secret id=nexus_pass,src="${NEXUS_PASS}" \
+  --secret id=nexus_user,env="${NEXUS_USER}" \
+  --secret id=nexus_pass,env="${NEXUS_PASS}" \
   .
 
 # Push it
