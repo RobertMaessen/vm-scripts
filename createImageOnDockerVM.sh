@@ -151,7 +151,7 @@ cp -r ${HELM_IMAGE}/dockerFiles  ${RELEASE_DIR}
 cp -r ${HELM_IMAGE}/bin  ${RELEASE_DIR}
 cp -r ${HELM_IMAGE}/spark-image ${RELEASE_DIR}
 cp ${REL_HOME}/pipfile.txt ${RELEASE_DIR}/dockerFiles/requirements.txt
-cp ${REL_HOME}/pipfile.txt ${RELEASE_DIR}/spark-image/etc/requirements.txt
+cp ${REL_HOME}/pipfile.txt ${RELEASE_DIR}/spark-image/requirements.txt
 
 printf '<%s>\n' "${DOCKER_URL}" "${BASE}" "${APPV}" "${REL_HOME}" "${RELEASE_DIR}"
 
