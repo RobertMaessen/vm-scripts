@@ -4,8 +4,6 @@ HELM_IMAGE="${GIT_HOME}/helm-image"
 DOCKER_URL="192.168.122.72:5000"
 NEXUS_URL="http://192.168.122.61:8081/repository/raw_files/APPS"
 NEXUS_CUST_URL="http://192.168.122.61:8081/repository/customers/"
-NEXUS_USER="$(awk -F ":" '{print $1}' "$HOME/.nexuspw")"
-NEXUS_PASS="$(awk -F ":" '{print $2}' "$HOME/.nexuspw")"
 BASE=$(grep Base ${GIT_HOME}/release-versions/SygnoCore.txt | awk -F ": " '{print $2}' )
 APPV="0.0.29" # This needs to be updated before a run... otherwise it will not be installed via helm
 cut -d: -f1 "$HOME/.nexuspw" > /tmp/nexus_user.secret
@@ -24,7 +22,7 @@ cd ${REL_HOME} || exit 1
 git pull
 git branch -r
 RBRANCH=$(git branch | grep \*)
-echo -e "${GR}release-versions branch is set to ${RBRANCH}, type 'Y' if that is fine otherwise type in the branch name you want to use${NC}"
+echo -e "${GR}release-versions branch is set to ${RED}${RBRANCH}${GR}, type 'Y' if that is fine otherwise type in the branch name you want to use${NC}"
 read -r branch
 case $branch in
   Y|y) echo "we will use $RBRANCH"
@@ -38,7 +36,7 @@ cd ${GIT_HOME}/helm-image || exit 1
 git pull
 git branch -r
 HBRANCH=$(git branch | grep \*)
-echo -e "${GR}helm-image branch is set to ${HBRANCH}, type 'Y' if that is fine otherwise type in the branch name you want to use${NC}"
+echo -e "${GR}helm-image branch is set to ${RED}${HBRANCH}${GR}, type 'Y' if that is fine otherwise type in the branch name you want to use${NC}"
 read -r branch
 case $branch in
   Y|y) echo "we will use $HBRANCH"
@@ -53,7 +51,7 @@ cd ${GIT_HOME}/platform-backend || exit 1
 git pull
 git branch -r
 PBRANCH=$(git branch | grep \*)
-echo -e "${GR}platform-backend branch is set to ${PBRANCH}, type 'Y' if that is fine otherwise type in the branch name you want to use${NC}"
+echo -e "${GR}platform-backend branch is set to ${RED}${PBRANCH}${GR}, type 'Y' if that is fine otherwise type in the branch name you want to use${NC}"
 read -r branch
 case $branch in
   Y|y) echo "we will use $PBRANCH"
@@ -67,7 +65,7 @@ cd ${GIT_HOME}/analytics-backend || exit 1
 git pull
 git branch -r
 ABRANCH=$(git branch | grep \*)
-echo -e "${GR}analytics-backend branch is set to ${ABRANCH}, type 'Y' if that is fine otherwise type in the branch name you want to use${NC}"
+echo -e "${GR}analytics-backend branch is set to ${RED}${ABRANCH}${GR}, type 'Y' if that is fine otherwise type in the branch name you want to use${NC}"
 read -r branch
 case $branch in
   Y|y) echo "we will use $ABRANCH"
@@ -81,7 +79,7 @@ cd ${GIT_HOME}/manager-backend/manager || exit 1
 git pull
 git branch -r
 MBRANCH=$(git branch | grep \*)
-echo -e "${GR}manager-backend branch is set to ${MBRANCH}, type 'Y' if that is fine otherwise type in the branch name you want to use${NC}"
+echo -e "${GR}manager-backend branch is set to ${RED}${MBRANCH}${GR}, type 'Y' if that is fine otherwise type in the branch name you want to use${NC}"
 read -r branch
 case $branch in
   Y|y) echo "we will use $MBRANCH"
@@ -95,7 +93,7 @@ cd ${GIT_HOME}/frontend || exit 1
 git pull
 git branch -r
 FBRANCH=$(git branch | grep \*)
-echo -e "${GR}frontend branch is set to ${FBRANCH}, type 'Y' if that is fine otherwise type in the branch name you want to use${NC}"
+echo -e "${GR}frontend branch is set to ${RED}${FBRANCH}${GR}, type 'Y' if that is fine otherwise type in the branch name you want to use${NC}"
 read -r branch
 case $branch in
   Y|y) echo "we will use $FBRANCH"
@@ -109,7 +107,7 @@ cd ${GIT_HOME}/backend-common || exit 1
 git pull
 git branch -r
 CBRANCH=$(git branch | grep \*)
-echo -e "${GR}backend-common branch is set to ${CBRANCH}, type 'Y' if that is fine otherwise type in the branch name you want to use ${NC}"
+echo -e "${GR}backend-common branch is set to ${RED}${CBRANCH}${GR}, type 'Y' if that is fine otherwise type in the branch name you want to use ${NC}"
 read -r branch
 case $branch in
   Y|y) echo "we will use $CBRANCH"
@@ -123,7 +121,7 @@ cd $GIT_HOME/analytics-engine || exit 1
 git  pull
 git branch -r
 EBRANCH=$(git branch | grep \*)
-echo -e "${GR}analytics-engine branch is set to ${EBRANCH}, type 'Y' if that is fine otherwise type in the branch name you want to use${NC}"
+echo -e "${GR}analytics-engine branch is set to ${RED}${EBRANCH}${GR}, type 'Y' if that is fine otherwise type in the branch name you want to use${NC}"
 read -r branch
 case $branch in
   Y|y) echo "we will use $EBRANCH"
@@ -200,4 +198,4 @@ docker push ${DOCKER_URL}/sygno-exec-${BASE}:${APPV}
 # printf "y\n" | docker system prune --all | testing purpose
 cd ${GIT_HOME} || exit 1
 rm -rf ${RELEASE_DIR}
-rm -f /tmp/nexus_*.secret
+trap 'rm -f /tmp/nexus_user.secret /tmp/nexus_pass.secret' EXIT
