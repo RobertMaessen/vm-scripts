@@ -1,11 +1,12 @@
 #!/bin/bash
 
+APPV="0.0.32" # This needs to be updated before a run... otherwise it will not be installed via helm
+
 HELM_IMAGE="${GIT_HOME}/helm-image"
 DOCKER_URL="192.168.122.72:5000"
 NEXUS_URL="http://192.168.122.61:8081/repository/raw_files/APPS"
 NEXUS_CUST_URL="http://192.168.122.61:8081/repository/customers/"
 BASE=$(grep Base ${GIT_HOME}/release-versions/SygnoCore.txt | awk -F ": " '{print $2}' )
-APPV="0.0.31" # This needs to be updated before a run... otherwise it will not be installed via helm
 cut -d: -f1 "$HOME/.nexuspw" > /tmp/nexus_user.secret
 cut -d: -f2- "$HOME/.nexuspw" > /tmp/nexus_pass.secret
 chmod 600 /tmp/nexus_user.secret /tmp/nexus_pass.secret
