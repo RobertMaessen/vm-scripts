@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APPV="0.0.34" # This need update before a run... otherwise it will not be installed via helmIssues in spark image
+APPV="0.0.34" ## This needs an update before a run... otherwise it will not be installed via helmIssues in spark image
 
 HELM_IMAGE="${GIT_HOME}/helm-image"
 DOCKER_URL="192.168.122.72:5000"
@@ -17,7 +17,7 @@ RED='\033[0;31m'
 GR='\033[0;32m'
 NC='\033[0m'
 
-
+## Retrieve files from git repo
 REL_HOME=${GIT_HOME}/release-versions
 cd ${REL_HOME} || exit 1
 git pull
@@ -147,7 +147,7 @@ rsync -a backend-common/ ${RELEASE_DIR}/sygno_core/platform-backend/src/common
 rsync -a backend-common/ ${RELEASE_DIR}/sygno_core/manager/src/common
 
 
-# Copy files to release dir
+## Copy files to release dir
 cp -r ${HELM_IMAGE}/Dockerfile ${RELEASE_DIR}
 cp -r ${HELM_IMAGE}/dockerFiles  ${RELEASE_DIR}
 cp -r ${HELM_IMAGE}/bin  ${RELEASE_DIR}
@@ -157,7 +157,7 @@ cp ${REL_HOME}/pipfile.txt ${RELEASE_DIR}/spark-image/requirements.txt
 
 printf '<%s>\n' "${DOCKER_URL}" "${BASE}" "${APPV}" "${REL_HOME}" "${RELEASE_DIR}"
 
-# Docker build sygno-helm image
+## Docker build sygno-helm image
 cd ${RELEASE_DIR} || exit 1
 docker build -t ${DOCKER_URL}/sygno-helm-${BASE}:$APPV \
   --build-arg APP_PYTHONVERSION="$(grep PythonVersion ${REL_HOME}/applications.txt | awk -F ": " '{print $2}')" \
@@ -174,10 +174,10 @@ docker build -t ${DOCKER_URL}/sygno-helm-${BASE}:$APPV \
   --secret id=nexus_pass,src=/tmp/nexus_pass.secret \
   .
 
-# Push the image
+## Push the image
 docker push ${DOCKER_URL}/sygno-helm-${BASE}:${APPV}
 
-# Docker build sygno-exec image
+## Docker build sygno-exec image
 cd ${RELEASE_DIR}/spark-image || exit 1
 docker build -t ${DOCKER_URL}/sygno-exec-${BASE}:$APPV \
   --build-arg APP_PYTHONVERSION="$(grep PythonVersion ${REL_HOME}/applications.txt | awk -F ": " '{print $2}')" \
@@ -192,11 +192,11 @@ docker build -t ${DOCKER_URL}/sygno-exec-${BASE}:$APPV \
   --secret id=nexus_pass,src=/tmp/nexus_pass.secret \
   .
 
-# Push it
+## Push it
 docker push ${DOCKER_URL}/sygno-exec-${BASE}:${APPV}
 
-# Clean up after build
-# printf "y\n" | docker system prune --all | testing purpose
+## Clean up after build
+printf "y\n" | docker system prune --all
 cd ${GIT_HOME} || exit 1
 rm -rf ${RELEASE_DIR}
 trap 'rm -f /tmp/nexus_user.secret /tmp/nexus_pass.secret' EXIT
