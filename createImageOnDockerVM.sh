@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APPV="0.0.34" # This needs to be updated before a run... otherwise it will not be installed via helm
+APPV="0.0.33" # This need update before a run... otherwise it will not be installed via helmIssues in spark image
 
 HELM_IMAGE="${GIT_HOME}/helm-image"
 DOCKER_URL="192.168.122.72:5000"
